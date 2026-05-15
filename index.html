@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GE-ELEC 14: Philippine Political Economy</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Lora:ital,wght@0,400;0,700;1,400&display=swap');
+        
+        :root {
+            --primary: #0f172a;
+            --accent: #f59e0b;
+        }
+
+        * {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        .academic-serif {
+            font-family: 'Lora', serif;
+            line-height: 1.8;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .module-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .img-overlay {
+            background: linear-gradient(to bottom, transparent, rgba(15, 23, 42, 0.8));
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+
+        const App = () => {
+            const [activeId, setActiveId] = useState(0);
+            const [completed, setCompleted] = useState([]);
+            const [score, setScore] = useState(null);
+            const [answers, setAnswers] = useState({});
+
+            const modules = [
+                {
+                    id: 0,
+                    title: "Conceptual Foundations",
+                    image: "https://images.unsplash.com/photo-1521791136064-7986c2959d43?auto=format&fit=crop&q=80&w=1000",
+                    content: `Politics is not merely about voting; it is the study of how society allocates values and resources. For the Philippines, this study is vital to understanding systemic inequality.`
+                },
+                {
+                    id: 1,
+                    title: "The Philippine Social Structure",
+                    image: "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&q=80&w=1000",
+                    content: `Analysis of the Philippine social pyramid reveals a massive base of peasantry and laborers, a thin middle class, and a microscopic but powerful elite ruling class.`
+                },
+                {
+                    id: 2,
+                    title: "Semi-Colonialism Explained",
+                    image: "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?auto=format&fit=crop&q=80&w=1000",
+                    content: `Formal independence exists through the flag and anthem, yet foreign corporate and political interests often dictate national economic directives.`
+                },
+                {
+                    id: 3,
+                    title: "The Semi-Feudal Reality",
+                    image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=1000",
+                    content: `Vast landholdings (Haciendas) persist in the countryside. The lack of genuine land reform forces farmers into cycles of debt and dependency.`
+                },
+                {
+                    id: 4,
+                    title: "Bureaucratic Capitalism",
+                    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1000",
+                    content: `In this system, political office is treated as a business investment. State resources are utilized to enrich the bureaucrat and their private enterprises.`
+                },
+                {
+                    id: 5,
+                    title: "The Three Basic Problems",
+                    image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=1000",
+                    content: `Scholars identify Imperialism, Feudalism, and Bureaucrat Capitalism as the 'three basic problems' that trap the Philippines in a state of underdevelopment.`
+                },
+                {
+                    id: 6,
+                    title: "Political Dynasties",
+                    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&q=80&w=1000",
+                    content: `The monopoly of political power by a few families inhibits democratic competition and prevents the implementation of radical, pro-people policies.`
+                },
+                {
+                    id: 7,
+                    title: "Executive Power Dynamics",
+                    image: "https://images.unsplash.com/photo-1436450412740-6b988f486c6b?auto=format&fit=crop&q=80&w=1000",
+                    content: `The President holds supreme executive authority, controlling the budget (power of the purse) and the military (commander-in-chief).`
+                },
+                {
+                    id: 8,
+                    title: "Legislative Gridlock",
+                    image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=1000",
+                    content: `While Congress creates laws, the heavy representation of landed elites often prevents the passage of legislation that would disrupt the status quo.`
+                },
+                {
+                    id: 9,
+                    title: "Judicial Independence",
+                    image: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=1000",
+                    content: `The Judiciary is the final arbiter of law. However, appointments are often influenced by executive preference, raising questions about impartiality.`
+                },
+                {
+                    id: 10,
+                    title: "Audiovisual Lecture",
+                    isSpecial: "video",
+                    content: "Analysis of Philippine Political Economy via Verified Sources."
+                },
+                {
+                    id: 11,
+                    title: "Neoliberalism in PH",
+                    image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1000",
+                    content: `The shift toward privatization, deregulation, and liberalization has opened the PH economy but has also increased the cost of basic utilities for citizens.`
+                },
+                {
+                    id: 12,
+                    title: "Labor Export Model",
+                    image: "https://images.unsplash.com/photo-1436450412740-6b988f486c6b?auto=format&fit=crop&q=80&w=1000",
+                    content: `The 'Bagong Bayani' (OFWs) sustain the economy through remittances, reflecting a failure of the local market to provide dignified employment.`
+                },
+                {
+                    id: 13,
+                    title: "Civil Society Resistance",
+                    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=1000",
+                    content: `People Power is more than a single event; it is the ongoing struggle of marginalized groups to demand accountability and social justice.`
+                },
+                {
+                    id: 14,
+                    title: "The 1987 Constitution",
+                    image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=1000",
+                    content: `Drafted as a reaction to dictatorship, it contains strong social justice provisions that remain largely unimplemented today.`
+                },
+                {
+                    id: 15,
+                    title: "Human Rights Framework",
+                    image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=1000",
+                    content: `International treaties and local laws protect the Filipino citizen, yet enforcement remains a challenge in the face of state-sponsored aggression.`
+                },
+                {
+                    id: 16,
+                    title: "Decentralization Policy",
+                    image: "https://images.unsplash.com/photo-1541888946425-d81bb19480c5?auto=format&fit=crop&q=80&w=1000",
+                    content: `The Local Government Code of 1991 shifted power to the regions, though this has often empowered local dynasties rather than the people.`
+                },
+                {
+                    id: 17,
+                    title: "Environmental Politics",
+                    image: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1000",
+                    content: `Resource extraction (mining/logging) creates conflict between foreign corporate profit and the ancestral rights of indigenous peoples.`
+                },
+                {
+                    id: 18,
+                    title: "The Future of Sovereignty",
+                    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1000",
+                    content: `In an era of globalization, the Philippines must balance digital transformation with the protection of national industries and food security.`
+                },
+                {
+                    id: 19,
+                    title: "Final Assessment",
+                    isSpecial: "exam",
+                    content: "Summative Evaluation for GE-ELEC 14"
+                }
+            ];
+
+            const quiz = [
+                { q: "What term describes the use of state office for private profit?", a: "Bureaucratic Capitalism", options: ["Socialism", "Bureaucratic Capitalism", "Anarchism", "Federalism"] },
+                { q: "What characterizes a 'Semi-Colonial' state?", a: "Dependence on foreign powers", options: ["Total isolation", "Dependence on foreign powers", "Absolute monarchy", "No government"] },
+                { q: "The 'Semi-Feudal' problem is primarily related to:", a: "Land ownership", options: ["Internet speeds", "Land ownership", "Space travel", "Tourism"] }
+            ];
+
+            const handleAnswer = (idx, val) => setAnswers(p => ({...p, [idx]: val}));
+            
+            const submitQuiz = () => {
+                let correct = 0;
+                quiz.forEach((item, i) => { if(answers[i] === item.a) correct++; });
+                setScore((correct / quiz.length) * 100);
+            };
+
+            useEffect(() => { if(window.lucide) window.lucide.createIcons(); }, [activeId]);
+
+            const current = modules[activeId];
+
+            return (
+                <div className="flex h-screen overflow-hidden">
+                    {/* Navigation Sidebar */}
+                    <aside className="w-80 bg-slate-900 text-white hidden md:flex flex-col shadow-2xl z-20">
+                        <div className="p-8 border-b border-slate-800">
+                            <div className="flex items-center gap-3 mb-2">
+                                <div className="p-2 bg-amber-500 rounded-lg">
+                                    <i data-lucide="graduation-cap" className="w-5 h-5 text-slate-900"></i>
+                                </div>
+                                <h1 className="text-xl font-extrabold tracking-tight">GE-ELEC 14</h1>
+                            </div>
+                            <p className="text-[10px] uppercase font-bold tracking-widest text-slate-500">Advanced Political Science</p>
+                        </div>
+                        
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-1">
+                            {modules.map((m, i) => (
+                                <button 
+                                    key={i}
+                                    onClick={() => setActiveId(i)}
+                                    className={`w-full text-left px-4 py-3 rounded-xl transition-all flex items-center gap-4 group ${activeId === i ? 'bg-amber-500 text-slate-900 shadow-lg shadow-amber-500/20' : 'text-slate-400 hover:bg-slate-800 hover:text-white'}`}
+                                >
+                                    <span className={`text-[10px] font-black w-6 h-6 rounded-full flex items-center justify-center border ${activeId === i ? 'border-slate-900' : 'border-slate-700'}`}>
+                                        {i + 1}
+                                    </span>
+                                    <span className="text-xs font-bold truncate">{m.title}</span>
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="p-6 bg-slate-950 border-t border-slate-800">
+                            <p className="text-[10px] font-black text-slate-500 uppercase mb-2">Academic Team</p>
+                            <p className="text-[9px] leading-relaxed text-slate-400 font-semibold">Colis • Gula • Magdaong • Magriña • Mediavillo • Pelaez</p>
+                        </div>
+                    </aside>
+
+                    {/* Main Viewport */}
+                    <main className="flex-1 overflow-y-auto custom-scrollbar bg-slate-50">
+                        <div className="max-w-5xl mx-auto p-6 md:p-12 lg:p-20">
+                            
+                            <header className="mb-12 flex justify-between items-end">
+                                <div>
+                                    <div className="inline-block px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-4">
+                                        Module Unit {activeId + 1} of 20
+                                    </div>
+                                    <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tighter leading-none">
+                                        {current.title}
+                                    </h2>
+                                </div>
+                                <div className="text-right hidden sm:block">
+                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Format</p>
+                                    <p className="text-xs font-bold text-slate-900 uppercase">Interactive E-Module</p>
+                                </div>
+                            </header>
+
+                            <div className="fade-in">
+                                {current.isSpecial === 'video' ? (
+                                    <div className="space-y-8">
+                                        <div className="video-wrapper">
+                                            <iframe 
+                                                src="https://www.youtube.com/embed/j_k_k-bHigM" 
+                                                title="Educational Video" 
+                                                frameborder="0" 
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                                allowfullscreen>
+                                            </iframe>
+                                        </div>
+                                        <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                                            <h3 className="text-xl font-bold mb-4 text-slate-900">Guided Observation</h3>
+                                            <p className="academic-serif text-slate-600">While watching, note how the speaker connects the physical reality of agriculture to the abstract concept of "Bureaucratic Capitalism." How does state power serve as the bridge between land and profit?</p>
+                                        </div>
+                                    </div>
+                                ) : current.isSpecial === 'exam' ? (
+                                    <div className="bg-white p-8 md:p-16 rounded-[3rem] shadow-xl border border-slate-200">
+                                        <h3 className="text-3xl font-black mb-8 text-slate-900">Final Competency Test</h3>
+                                        <div className="space-y-12">
+                                            {quiz.map((q, i) => (
+                                                <div key={i} className="space-y-4">
+                                                    <p className="text-lg font-bold text-slate-800">{i+1}. {q.q}</p>
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                                        {q.options.map(opt => (
+                                                            <button 
+                                                                key={opt}
+                                                                onClick={() => handleAnswer(i, opt)}
+                                                                className={`p-4 text-left rounded-2xl border-2 transition-all font-semibold ${answers[i] === opt ? 'bg-slate-900 text-white border-slate-900' : 'bg-slate-50 border-slate-100 hover:border-amber-400'}`}
+                                                            >
+                                                                {opt}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            <button 
+                                                onClick={submitQuiz}
+                                                className="w-full py-5 bg-amber-500 text-slate-900 font-black rounded-2xl shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-xl"
+                                            >
+                                                Submit Comprehensive Exam
+                                            </button>
+                                            {score !== null && (
+                                                <div className="p-8 bg-slate-900 text-white rounded-3xl text-center animate-bounce">
+                                                    <p className="text-[10px] font-black uppercase tracking-widest text-amber-500 mb-2">Final Evaluation Score</p>
+                                                    <h4 className="text-5xl font-black">{score}%</h4>
+                                                    <p className="mt-4 text-sm font-semibold opacity-70">Certification Record Generated</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+                                        <div className="relative group overflow-hidden rounded-[2.5rem] shadow-2xl">
+                                            <img 
+                                                src={current.image} 
+                                                alt={current.title}
+                                                className="w-full h-[500px] object-cover group-hover:scale-110 transition-transform duration-700"
+                                            />
+                                            <div className="absolute inset-0 img-overlay flex flex-col justify-end p-8 text-white">
+                                                <p className="text-xs font-black uppercase tracking-[0.3em] opacity-60">Visual Reference</p>
+                                                <p className="text-xl font-bold leading-tight mt-1">{current.title}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="space-y-6">
+                                            <div className="flex gap-2">
+                                                <div className="h-1 w-12 bg-amber-500 rounded-full"></div>
+                                                <div className="h-1 w-4 bg-slate-200 rounded-full"></div>
+                                            </div>
+                                            <p className="academic-serif text-2xl text-slate-700 font-medium">
+                                                {current.content}
+                                            </p>
+                                            <div className="p-6 bg-white border-l-4 border-amber-500 rounded-r-2xl shadow-sm italic text-slate-500 text-sm">
+                                                "True political education begins when one recognizes the structural roots of local suffering."
+                                            </div>
+                                            
+                                            <div className="pt-8 flex gap-4">
+                                                <button 
+                                                    disabled={activeId === 0}
+                                                    onClick={() => setActiveId(activeId - 1)}
+                                                    className="flex-1 py-4 px-6 border-2 border-slate-200 rounded-2xl font-bold text-slate-400 hover:text-slate-900 hover:border-slate-900 disabled:opacity-20 transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    <i data-lucide="arrow-left" className="w-4 h-4"></i> Previous
+                                                </button>
+                                                <button 
+                                                    disabled={activeId === modules.length - 1}
+                                                    onClick={() => setActiveId(activeId + 1)}
+                                                    className="flex-1 py-4 px-6 bg-slate-900 text-white rounded-2xl font-bold hover:bg-amber-500 hover:text-slate-900 shadow-xl shadow-slate-900/10 transition-all flex items-center justify-center gap-2"
+                                                >
+                                                    Next Unit <i data-lucide="arrow-right" className="w-4 h-4"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            <footer className="mt-20 pt-8 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] gap-4">
+                                <span>College of Education • Filipino Major</span>
+                                <div className="flex gap-4">
+                                    <span>Instructional Design</span>
+                                    <span className="text-amber-500">Validated</span>
+                                </div>
+                            </footer>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
